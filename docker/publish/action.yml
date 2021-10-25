@@ -11,7 +11,7 @@ runs:
   using: "composite"
   steps:
     - id: gitversion
-      uses: urbanenvi/actions/gitversion@main
+      uses: techbounty/actions/gitversion@main
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
     - name: Set up Docker Buildx

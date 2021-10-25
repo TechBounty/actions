@@ -10,7 +10,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: urbanenvi/actions/gitversion@main
+    - uses: techbounty/actions/gitversion@main
     - name: "Setup .NET 6"
       uses: actions/setup-dotnet@v1
       with:

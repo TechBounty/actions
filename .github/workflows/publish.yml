@@ -1,0 +1,48 @@
+name: "Publish project"
+
+on:
+  workflow_call:
+    inputs:
+      solution:
+        description: "Project solution"
+        required: false
+        type: string
+      nuget:
+        description: "Publish nuget packages"
+        required: false
+        type: boolean
+      nugetRepository:
+        description: "Publish nuget packages"
+        required: false
+        type: boolean
+      docker:
+        description: "Publish nuget packages"
+        required: false
+        type: boolean
+
+jobs:
+  publish_nuget:
+    name: NuGet
+    runs-on: ubuntu-latest
+    if: ${{ inputs.nuget }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch all history for all tags and branches
+        run: |
+          git fetch --prune --unshallow
+      - uses: techbounty/actions/nuget/publish@main
+        with:
+          solution: ${{ inputs.solution }}
+          repository: ${{ inputs.nugetRepository }}
+  publish_docker:
+    name: Docker
+    runs-on: ubuntu-latest
+    if: ${{ inputs.docker }}
+    env:
+      FEED_ACCESSTOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch all history for all tags and branches
+        run: |
+          git fetch --prune --unshallow
+      - uses: techbounty/actions/docker/publish@main
