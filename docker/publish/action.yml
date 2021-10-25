@@ -1,0 +1,28 @@
+name: "Docker publish"
+description: "Build and pushes images"
+inputs:
+  context:
+    description: "Docker compose file to build"
+    required: false
+  file:
+    description: "Path to the Dockerfile."
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - id: gitversion
+      uses: urbanenvi/actions/gitversion@main
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Login to GHCR
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+    - name: Build and push
+      uses: docker/bake-action@master
+      with:
+        push: true

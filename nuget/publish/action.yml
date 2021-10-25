@@ -1,0 +1,43 @@
+name: "NuGet publish"
+description: "Publishes NuGet packages to feed"
+inputs:
+  solution:
+    description: "Solution to build"
+    required: true
+  repository:
+    description: "NuGet repo"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: urbanenvi/actions/gitversion@main
+    - name: "Setup .NET 6"
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: "6.0.x"
+        include-prerelease: true
+    - run: |
+        dotnet nuget add source \
+          --username USERNAME \
+          --password ${{ github.token }} \
+          --store-password-in-clear-text \
+          --name github "${{ inputs.repository }}"
+      shell: bash
+    - run: |
+        dotnet restore ${{ inputs.solution }}
+      shell: bash
+    - run: |
+        dotnet pack ${{ inputs.solution }} \
+          /p:Configuration=Release \
+          /p:PackageVersion=$GITVERSION_NUGETVERSION \
+          --output ./artifacts/nuget
+      shell: bash
+    - run: |
+        dotnet nuget push ./artifacts/nuget/**.nupkg \
+          --api-key ${{ github.token }} \
+          --source github
+      shell: bash
+    - uses: actions/upload-artifact@v1
+      with:
+        name: nuget
+        path: ./artifacts/nuget
