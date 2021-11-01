@@ -14,7 +14,7 @@ on:
       nugetRepository:
         description: "Publish nuget packages"
         required: false
-        type: boolean
+        type: string
       docker:
         description: "Publish nuget packages"
         required: false
