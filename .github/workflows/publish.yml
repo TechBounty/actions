@@ -19,6 +19,18 @@ on:
         description: "Publish nuget packages"
         required: false
         type: boolean
+      dockerRepository:
+        description: "Docker repository"
+        required: false
+        type: string
+      dockerRepositoryUsername:
+        description: "Docker repository username"
+        required: false
+        type: string
+      dockerRepositoryPassword:
+        description: "Docker repository password"
+        required: false
+        type: string
 
 jobs:
   publish_nuget:
@@ -46,3 +58,7 @@ jobs:
         run: |
           git fetch --prune --unshallow
       - uses: techbounty/actions/docker/publish@main
+        with:
+          repository: ${{ inputs.dockerRepository }}
+          repositoryUsername: ${{ inputs.dockerRepositoryUsername }}
+          repositoryPassword: ${{ inputs.dockerRepositoryPassword }}
