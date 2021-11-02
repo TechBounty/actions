@@ -7,17 +7,17 @@ inputs:
   file:
     description: "Path to the Dockerfile."
     required: false
-  repository:
+  registry:
     default: ghcr.io
-    description: "Docker repository"
+    description: "Docker registry"
     required: true
-  repositoryUsername:
+  registryUsername:
     default: ${{ github.actor }}
-    description: "Docker repository username"
+    description: "Docker registry username"
     required: true
-  repositoryPassword:
+  registryPassword:
     default: ${{ github.token }}
-    description: "Docker repository password"
+    description: "Docker registry password"
     required: true
 runs:
   using: "composite"
@@ -31,9 +31,9 @@ runs:
     - name: Login to GHCR
       uses: docker/login-action@v1
       with:
-        registry: ${{ inputs.repository }}
-        username: ${{ inputs.repositoryUsername }}
-        password: ${{ inputs.repositoryPassword }}
+        registry: ${{ inputs.registry }}
+        username: ${{ inputs.registryUsername }}
+        password: ${{ inputs.registryPassword }}
     - name: Build and push
       uses: docker/bake-action@master
       with:
