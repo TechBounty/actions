@@ -7,6 +7,14 @@ inputs:
   repository:
     description: "NuGet repo"
     required: true
+  repositoryUsername:
+    description: "NuGet repo username"
+    required: false
+    default: USERNAME
+  repositoryPassword:
+    description: "NuGet repo password"
+    required: false
+    default: ${{ github.token }}
 runs:
   using: "composite"
   steps:
@@ -18,10 +26,10 @@ runs:
         include-prerelease: true
     - run: |
         dotnet nuget add source \
-          --username USERNAME \
-          --password ${{ github.token }} \
+          --username ${{ inputs.repositoryUsername }} \
+          --password ${{ inputs.repositoryPassword }} \
           --store-password-in-clear-text \
-          --name github "${{ inputs.repository }}"
+          --name feed "${{ inputs.repository }}"
       shell: bash
     - run: |
         dotnet restore ${{ inputs.solution }}
@@ -34,8 +42,8 @@ runs:
       shell: bash
     - run: |
         dotnet nuget push ./artifacts/nuget/**.nupkg \
-          --api-key ${{ github.token }} \
-          --source github
+          --api-key ${{ inputs.repositoryPassword }} \
+          --source feed
       shell: bash
     - uses: actions/upload-artifact@v1
       with:
